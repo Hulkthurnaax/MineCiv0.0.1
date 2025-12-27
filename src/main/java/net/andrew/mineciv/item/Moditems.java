@@ -20,10 +20,6 @@ public class Moditems {
    public static final RegistryObject<Item> WOODWAND = ITEMS.register("woodwand",
            () -> new WoodwandItem(new Item.Properties().durability(16)));
 
-    public static final RegistryObject<Item> CANNON = ITEMS.register("cannon",
-            () -> new BlockItem(ModBlocks.CANNON.get(), new Item.Properties())
-    );
-
    public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

@@ -1,8 +1,6 @@
 package net.andrew.mineciv.block.custom;
 import net.andrew.mineciv.ModMenuTypes;
 import net.andrew.mineciv.block.entity.custom.CannonBlockEntity;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -10,14 +8,16 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class CannonMenu extends AbstractContainerMenu {
 
     private final CannonBlockEntity cannonEntity;
 
-    public CannonMenu(int containerId, Inventory playerInventory, CannonBlockEntity cannonEntity) {
+    public CannonMenu(int containerId, Inventory playerInventory, @UnknownNullability CannonBlockEntity cannonEntity) {
         super(ModMenuTypes.CANNON_MENU.get(), containerId);
         this.cannonEntity = cannonEntity;
+
 
         // Cannon inventory slots
         this.addSlot(new SlotItemHandler(cannonEntity.getInventory(), 0, 44, 35) {
