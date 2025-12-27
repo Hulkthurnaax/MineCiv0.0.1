@@ -7,6 +7,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -14,25 +16,24 @@ public class CannonMenu extends AbstractContainerMenu {
 
     private final CannonBlockEntity cannonEntity;
 
-    public CannonMenu(int containerId, Inventory playerInventory, @UnknownNullability CannonBlockEntity cannonEntity) {
+    public CannonMenu(int containerId, Inventory playerInventory, CannonBlockEntity cannonEntity) {
         super(ModMenuTypes.CANNON_MENU.get(), containerId);
         this.cannonEntity = cannonEntity;
 
-
         // Cannon inventory slots
-        this.addSlot(new SlotItemHandler(cannonEntity.getInventory(), 0, 44, 35) {
+        this.addSlot(new SlotItemHandler(cannonEntity.getInventory(), 0, 56, 17) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(Items.TNT);
             }
-        }); // TNT slot
+        });
 
-        this.addSlot(new SlotItemHandler(cannonEntity.getInventory(), 1, 116, 35) {
+        this.addSlot(new SlotItemHandler(cannonEntity.getInventory(), 1, 56, 53) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(Items.REDSTONE);
             }
-        }); // Redstone slot
+        });
 
         // Player inventory
         for (int row = 0; row < 3; ++row) {
@@ -61,12 +62,10 @@ public class CannonMenu extends AbstractContainerMenu {
             itemstack = stack.copy();
 
             if (index < 2) {
-                // Moving from cannon to player inventory
                 if (!this.moveItemStackTo(stack, 2, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                // Moving from player inventory to cannon
                 if (stack.is(Items.TNT)) {
                     if (!this.moveItemStackTo(stack, 0, 1, false)) {
                         return ItemStack.EMPTY;

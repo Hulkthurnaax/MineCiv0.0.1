@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class CannonScreen extends AbstractContainerScreen<CannonMenu> {
 
     private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("mineciv", "textures/gui/cannon.png");
+            ResourceLocation.withDefaultNamespace("textures/gui/container/furnace.png");
 
     private CannonBlockEntity cannonEntity;
     private float currentPitch;
