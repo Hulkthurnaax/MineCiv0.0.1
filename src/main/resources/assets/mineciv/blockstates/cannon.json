@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "facing=north,part=0": {
+      "model": "mineciv:block/cannon",
+      "y": 0
+    },
+    "facing=north,part=1": {
+      "model": "mineciv:block/cannon",
+      "y": 0
+    },
+    "facing=north,part=2": {
+      "model": "mineciv:block/cannon",
+      "y": 0
+    },
+    "facing=south,part=0": {
+      "model": "mineciv:block/cannon",
+      "y": 180
+    },
+    "facing=south,part=1": {
+      "model": "mineciv:block/cannon",
+      "y": 180
+    },
+    "facing=south,part=2": {
+      "model": "mineciv:block/cannon",
+      "y": 180
+    },
+    "facing=west,part=0": {
+      "model": "mineciv:block/cannon",
+      "y": 270
+    },
+    "facing=west,part=1": {
+      "model": "mineciv:block/cannon",
+      "y": 270
+    },
+    "facing=west,part=2": {
+      "model": "mineciv:block/cannon",
+      "y": 270
+    },
+    "facing=east,part=0": {
+      "model": "mineciv:block/cannon",
+      "y": 90
+    },
+    "facing=east,part=1": {
+      "model": "mineciv:block/cannon",
+      "y": 90
+    },
+    "facing=east,part=2": {
+      "model": "mineciv:block/cannon",
+      "y": 90
+    }
+  }
+}

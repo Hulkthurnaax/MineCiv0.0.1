@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mineciv:block/monument_block"
+    }
+  }
+}

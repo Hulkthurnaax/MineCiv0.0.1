@@ -1,0 +1,14 @@
+{
+  "item.mineciv.monument" : "Torch of Civilization",
+  "item.mineciv.woodwand" : "Wooden Wand",
+
+  "block.mineciv.monument_block": "Monument of Civilization",
+  "block.mineciv.cannon_block": "Cannon",
+
+  "creativetab.mineciv.monument_items": "Monument Items",
+  "creativetab.mineciv.monument_blocks": "Monument Blocks",
+
+  "block.mineciv.cannon": "Cannon",
+  "entity.mineciv.cannonball": "Cannonball",
+  "container.mineciv.cannon": "Cannon"
+}
