@@ -1,8 +1,12 @@
 package net.andrew.mineciv.client;
 import net.andrew.mineciv.MineCiv;
 import net.andrew.mineciv.ModMenuTypes;
+import net.andrew.mineciv.block.entity.ModEntities;
 import net.andrew.mineciv.client.gui.CannonScreen;
+import net.andrew.mineciv.client.renderer.CannonballRenderer;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,6 +19,9 @@ public class ClientSetup {
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MenuScreens.register(ModMenuTypes.CANNON_MENU.get(), CannonScreen::new);
+
+            // Register cannonball renderer
+            EntityRenderers.register(ModEntities.CANNONBALL.get(), CannonballRenderer::new);
         });
     }
 }

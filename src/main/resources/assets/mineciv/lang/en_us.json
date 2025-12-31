@@ -1,6 +1,9 @@
 {
   "item.mineciv.monument" : "Torch of Civilization",
   "item.mineciv.woodwand" : "Wooden Wand",
+  "item.mineciv.ironclaymore" : "Iron Claymore",
+  "item.mineciv.ironclaymore.tooltip" : "Left-click: Heavy Chop (1.6x damage)",
+  "item.mineciv.ironclaymore.tooltip2" : "Right-click: Sweep Attack (1.4x damage, 75° cone)",
 
   "block.mineciv.monument_block": "Monument of Civilization",
   "block.mineciv.cannon_block": "Cannon",

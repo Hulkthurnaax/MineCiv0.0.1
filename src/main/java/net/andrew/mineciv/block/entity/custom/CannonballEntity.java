@@ -6,6 +6,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -14,15 +15,17 @@ import net.minecraft.world.phys.Vec3;
 
 public class CannonballEntity extends Projectile {
 
-    private static final float EXPLOSION_POWER = 8.0f; // 2x TNT (TNT = 4.0f)
+    private static final float EXPLOSION_POWER = 8.0f;
 
     public CannonballEntity(EntityType<? extends CannonballEntity> entityType, Level level) {
         super(entityType, level);
+        this.setNoGravity(false);
     }
 
     public CannonballEntity(Level level, double x, double y, double z) {
         this(ModEntities.CANNONBALL.get(), level);
         this.setPos(x, y, z);
+        this.setNoGravity(false);
     }
 
     @Override
@@ -34,44 +37,72 @@ public class CannonballEntity extends Projectile {
     public void tick() {
         super.tick();
 
-        if (!this.level().isClientSide) {
-            // Apply gravity
-            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.05, 0));
+        // Spawn trail particles
+        if (this.level().isClientSide) {
+            // Smoke trail
+            for (int i = 0; i < 3; i++) {
+                this.level().addParticle(ParticleTypes.SMOKE,
+                        this.getX() + (random.nextDouble() - 0.5) * 0.2,
+                        this.getY() + (random.nextDouble() - 0.5) * 0.2,
+                        this.getZ() + (random.nextDouble() - 0.5) * 0.2,
+                        0, -0.05, 0);
+            }
+            // Flame trail
+            this.level().addParticle(ParticleTypes.FLAME,
+                    this.getX(),
+                    this.getY(),
+                    this.getZ(),
+                    0, 0, 0);
+        }
 
-            // Check for collision
-            HitResult hitResult = this.getHitResult();
+        if (!this.level().isClientSide) {
+            // Server-side physics
+            Vec3 movement = this.getDeltaMovement();
+
+            // Apply gravity
+            movement = movement.add(0, -0.05, 0);
+
+            // Apply slight air resistance
+            movement = movement.scale(0.99);
+
+            // Check for collision BEFORE moving
+            Vec3 currentPos = this.position();
+            Vec3 nextPos = currentPos.add(movement);
+
+            HitResult hitResult = this.level().clip(new net.minecraft.world.level.ClipContext(
+                    currentPos,
+                    nextPos,
+                    net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                    net.minecraft.world.level.ClipContext.Fluid.NONE,
+                    this
+            ));
+
             if (hitResult.getType() != HitResult.Type.MISS) {
                 this.onHit(hitResult);
+                return;
             }
 
-            // Move
-            this.setPos(this.getX() + this.getDeltaMovement().x,
-                    this.getY() + this.getDeltaMovement().y,
-                    this.getZ() + this.getDeltaMovement().z);
-        } else {
-            // Spawn smoke particles on client
-            for (int i = 0; i < 2; i++) {
-                this.level().addParticle(ParticleTypes.SMOKE,
-                        this.getX(), this.getY(), this.getZ(),
-                        0, 0, 0);
+            // Check entity collisions
+            EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
+                    this.level(), this, currentPos, nextPos,
+                    this.getBoundingBox().expandTowards(movement).inflate(1.0),
+                    this::canHitEntity
+            );
+
+            if (entityHit != null) {
+                this.onHit(entityHit);
+                return;
             }
+
+            // Update position and movement
+            this.setDeltaMovement(movement);
+            this.setPos(nextPos.x, nextPos.y, nextPos.z);
         }
 
         // Remove after 200 ticks (10 seconds)
         if (this.tickCount > 200) {
             this.discard();
         }
-    }
-
-    private HitResult getHitResult() {
-        Vec3 start = this.position();
-        Vec3 end = start.add(this.getDeltaMovement());
-        return this.level().clip(new net.minecraft.world.level.ClipContext(
-                start, end,
-                net.minecraft.world.level.ClipContext.Block.COLLIDER,
-                net.minecraft.world.level.ClipContext.Fluid.NONE,
-                this
-        ));
     }
 
     @Override
@@ -92,7 +123,6 @@ public class CannonballEntity extends Projectile {
 
     private void explode() {
         if (!this.level().isClientSide) {
-            // Create explosion (2x TNT power)
             this.level().explode(
                     this,
                     this.getX(),
@@ -114,5 +144,10 @@ public class CannonballEntity extends Projectile {
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         // No additional data to save
+    }
+
+    @Override
+    public boolean shouldRenderAtSqrDistance(double distance) {
+        return distance < 16384.0; // Render up to 128 blocks away
     }
 }

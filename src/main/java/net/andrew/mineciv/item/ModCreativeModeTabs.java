@@ -27,7 +27,7 @@ public static final RegistryObject<CreativeModeTab> MONUMENT_ITEMS_TAB = CREATIV
 
                                       pOutput.accept(Moditems.WOODWAND.get());
 
-                                      pOutput.accept(ModBlocks.CANNON.get());
+
 
 
                                   }
@@ -41,6 +41,8 @@ public static final RegistryObject<CreativeModeTab> MONUMENT_BLOCKS_TAB = CREATI
                                   @Override
                                   public void accept(CreativeModeTab.ItemDisplayParameters pParameters, CreativeModeTab.Output pOutput) {
                                       pOutput.accept(ModBlocks.MONUMENT_BLOCK.get());
+
+                                      pOutput.accept(ModBlocks.CANNON.get());
                                   }
                               })
                 .build());

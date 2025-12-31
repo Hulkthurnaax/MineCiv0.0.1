@@ -98,20 +98,22 @@ public class CannonBlockEntity extends BlockEntity implements MenuProvider {
         inventory.extractItem(TNT_SLOT, 1, false);
         inventory.extractItem(REDSTONE_SLOT, 1, false);
 
-        // Get cannon direction
+        // Get cannon direction and rotate 90 degrees to fire from the side
         Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        Direction fireDirection = facing.getClockWise(); // This fires to the RIGHT side
+        // Use facing.getCounterClockWise() to fire to the LEFT side instead
 
-        // Calculate spawn position (in front of cannon)
+        // Calculate spawn position (from the side of the cannon)
         Vec3 cannonPos = Vec3.atCenterOf(worldPosition);
-        Vec3 offset = Vec3.atLowerCornerOf(facing.getNormal()).scale(2.0);
-        Vec3 spawnPos = cannonPos.add(offset).add(0, 0.5, 0);
+        Vec3 offset = Vec3.atLowerCornerOf(fireDirection.getNormal()).scale(2.5); // Spawn 2.5 blocks to the side
+        Vec3 spawnPos = cannonPos.add(offset).add(0, 0.5, 0); // Raise it up a bit
 
-        // Calculate velocity based on pitch and power
+        // Calculate velocity based on pitch and power (fires in the side direction)
         double radianPitch = Math.toRadians(pitch);
-        double horizontalSpeed = Math.cos(radianPitch) * power * 2.0;
-        double verticalSpeed = Math.sin(radianPitch) * power * 2.0;
+        double horizontalSpeed = Math.cos(radianPitch) * power * 2.5;
+        double verticalSpeed = Math.sin(radianPitch) * power * 2.5;
 
-        Vec3 velocity = Vec3.atLowerCornerOf(facing.getNormal())
+        Vec3 velocity = Vec3.atLowerCornerOf(fireDirection.getNormal())
                 .scale(horizontalSpeed)
                 .add(0, verticalSpeed, 0);
 
@@ -122,11 +124,20 @@ public class CannonBlockEntity extends BlockEntity implements MenuProvider {
 
         level.addFreshEntity(cannonball);
 
-        // Play sound
+        // Play sound and particle effects
         level.playSound(null, worldPosition,
                 net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(),
                 net.minecraft.sounds.SoundSource.BLOCKS,
                 2.0f, 0.8f);
+
+        // Add smoke particles at cannon
+        if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            serverLevel.sendParticles(
+                    net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE,
+                    spawnPos.x, spawnPos.y, spawnPos.z,
+                    20, 0.3, 0.3, 0.3, 0.05
+            );
+        }
 
         setChanged();
     }
